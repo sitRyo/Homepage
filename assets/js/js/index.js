@@ -17,6 +17,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const base64 = require('base-64');
 const axios = require('axios').default;
 const xml2js = require('xml2js');
+const yaml = require('js-yaml');
 const fs_1 = __importDefault(require("fs"));
 //----------------------------------------------
 // set process.env
@@ -132,44 +133,47 @@ const getHatenaNextLink = (link) => {
     });
     return nextLink[0];
 };
-//----------------------------------------------
-/* article Factory */
+const toISO8601StringByUTC9 = (date) => {
+    const dateStr = date.toISOString();
+    return dateStr.split('.')[0] + '+09:00';
+};
 const artilceFactory = (articles) => {
-    const pathOrg = '../../content/ja/';
+    const pathOrg = '../../content/ja/posts/';
     articles.forEach(val => createArticleFile(val, pathOrg));
 };
 const createArticleFile = (article, pathOrg) => {
     const filename = article.date.getTime() + '.md';
     const filepath = pathOrg + filename;
-    const data = articleConentFactory(article);
+    const toc = articleTocFactory(article).toString();
+    const body = articleBody(toc, article);
+    // console.log(body);
     if (fs_1.default.existsSync(filepath)) {
         return;
     }
-    fs_1.default.writeFile(pathOrg + filename, data, (err) => {
+    fs_1.default.writeFile(pathOrg + filename, body, (err) => {
         if (err)
             throw err;
         console.log(article.title + ' を作成しました。\n');
     });
 };
-const articleConentFactory = (article) => {
-    let content = '';
-    content += '---\n';
-    content += 'author: seriru\n';
-    content += 'title: ' + article.title + '\n';
-    content += 'date: ' + article.date + '\n';
-    content += 'description:\n';
-    content += 'draft: false\n';
-    content += 'hideToc: false\n';
-    content += 'enableToc: true\n';
-    content += 'enableTocContent: flase\n';
-    content += 'author: seriru\n';
-    content += 'authorEmoji: \n';
-    content += 'tags: \n';
-    content += '- ' + article.tag + '\n';
-    content += '---\n';
-    content += '記事はこちら（タグが付いているリンク先に飛びます）\n';
-    content += article.url + '\n';
-    return content;
+const articleTocFactory = (article) => {
+    const toc = {
+        author: 'seriru',
+        title: `${article.title}`,
+        date: article.date,
+        description: '',
+        draft: false,
+        hideToc: false,
+        enableToc: true,
+        enableTocContent: false,
+        tags: [article.tag],
+    };
+    const tocStr = '---\n' + yaml.dump(toc) + '---\n';
+    return tocStr;
+};
+const articleBody = (toc, article) => {
+    const body = '\n記事はこちら（タグが付いているリンク先に飛びます）\n' + article.url + '\n';
+    return toc + body;
 };
 //----------------------------------------------
 const run = () => __awaiter(void 0, void 0, void 0, function* () {

@@ -1,12 +1,13 @@
-
 //----------------------------------------------
 /* Import modules */
 const base64 = require('base-64');
 const axios = require('axios').default;
 const xml2js = require('xml2js');
+const yaml = require('js-yaml');
 
-import { AxiosResponse } from 'axios';
 import fs from 'fs';
+import { AxiosResponse } from 'axios';
+
 
 //----------------------------------------------
 // set process.env
@@ -165,58 +166,65 @@ const getHatenaNextLink = (link: any[]): string => {
 //----------------------------------------------
 /* article Factory */
 
-// interface zzZArticle {
-//   author: string;
-//   title: string;
-//   date: string;
-//   description: string;
-//   draft: boolean;
-//   hideToc: boolean;
-//   enableToc: boolean;
-//   enableTocContent: boolean;
-  
-// }
+interface zzZArticle {
+  author: string;
+  title: string;
+  date: string; // ISO8601
+  description: string;
+  draft: boolean;
+  hideToc: boolean;
+  enableToc: boolean;
+  enableTocContent: boolean;
+  tags: string[]
+}
+
+const toISO8601StringByUTC9 = (date: Date): string => {
+  const dateStr = date.toISOString();
+  return dateStr.split('.')[0] + '+09:00';
+}
 
 const artilceFactory = (articles: ArticleInfo[]): void => {
-  const pathOrg = '../../content/ja/';
+  const pathOrg = '../../content/ja/posts/';
   articles.forEach(val => createArticleFile(val, pathOrg));
 };
 
 const createArticleFile = (article: ArticleInfo, pathOrg: string): void => {
   const filename = article.date.getTime() + '.md';
   const filepath = pathOrg + filename;
-  const data = articleConentFactory(article);
+  const toc = articleTocFactory(article).toString();
+  const body = articleBody(toc, article);
+  // console.log(body);
+
   if (fs.existsSync(filepath)) {
     return;
   }
 
-  fs.writeFile(pathOrg + filename, data, (err) => {
+  fs.writeFile(pathOrg + filename, body, (err) => {
     if (err) throw err;
     console.log(article.title + ' を作成しました。\n');
   });
 }
 
-const articleConentFactory = (article: ArticleInfo): string => {
-  let content = '';
-  content += '---\n';
-  content += 'author: seriru\n';
-  content += 'title: ' + article.title + '\n';
-  content += 'date: ' + article.date + '\n';
-  content += 'description:\n';
-  content += 'draft: false\n';
-  content += 'hideToc: false\n';
-  content += 'enableToc: true\n';
-  content += 'enableTocContent: false\n';
-  content += 'author: seriru\n';
-  content += 'authorEmoji: \n';
-  content += 'tags: \n'
-  content += '- ' + article.tag + '\n';
-  content += '---\n';
+const articleTocFactory = (article: ArticleInfo): Object => {
+  const toc = {
+    author: 'seriru',
+    title: `${article.title}`,
+    date: article.date,//toISO8601StringByUTC9(article.date), // ISO8601
+    description: '',
+    draft: false,
+    hideToc: false,
+    enableToc: true,
+    enableTocContent: false,
+    tags: [article.tag],
+  }
 
-  content += '記事はこちら（タグが付いているリンク先に飛びます）\n'
-  content += article.url + '\n';
+  const tocStr: string = '---\n' + yaml.dump(toc) + '---\n';
+  return tocStr;
+}
 
-  return content;
+const articleBody = (toc: string, article: ArticleInfo): string => {
+  const body = '\n記事はこちら（タグが付いているリンク先に飛びます）\n' + article.url + '\n';
+  return toc + body;
 }
 
 //----------------------------------------------
