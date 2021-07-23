@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "outDir": "./js",
+    "strict": true,
+    "esModuleInterop": true
+  },
+  "include": [
+    "./ts/**/*.ts"
+  ]
+}

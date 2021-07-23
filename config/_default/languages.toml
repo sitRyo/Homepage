@@ -1,0 +1,6 @@
+[ja]
+  title = "Seriru's Notepad"
+  languageName = "Japanese"
+  weight = 1
+  languagedir = "ltr"
+  contentdir = "content/ja"
