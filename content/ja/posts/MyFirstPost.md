@@ -1,20 +1,14 @@
 ---
-author: "Hugo Authors"
-title: "Test"
-date: 2019-12-16T12:00:06+09:00
-description: "Test Post"
+title: "このホームページについて"
+date: 2021-07-23T15:00:00+09:00
+description: ""
 draft: false
 hideToc: false
 enableToc: true
 enableTocContent: false
 author: seriru
-authorEmoji: 👻
 tags: 
-- emoji
-- gamoji
-- namoji
-- bamoji
-- amoji
+- その他
 ---
 
 TestTest

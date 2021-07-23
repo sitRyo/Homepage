@@ -8,7 +8,7 @@ meta_image = ""
 themecolor = ""
 
 themeOptions = ["dark", "light", "hacker", "solarized", "kimbie"]
-notAllowedTypesInHome = ["contact", "talks", "about", "showcase", "publication", "presentation", "resume"]
+notAllowedTypesInHome = ["contact", "archive", "talks", "about", "showcase", "publication", "presentation", "resume"]
 notAllowedTypesInHomeSidebar = ["about", "archive", "showcase", "publication", "presentation", "resume"]
 notAllowedTypesInArchive = ["about", "talks", "showcase", "publication", "presentation", "resume"]
 notAllowedTypesInHomeFeed = ["about", "archive", "contact", "talks", "showcase", "publication", "presentation", "resume", "gallery"]
@@ -24,7 +24,7 @@ enableAppbarSearchIcon = false
 enableAppbarLangIcon = false
 
 # header
-homeHeaderType = "text" # text, img, slide, typewriter
+homeHeaderType = "typewriter" # text, img, slide, typewriter
 hideHomeHeaderWhenMobile = false
 
 # menu
@@ -42,7 +42,7 @@ searchThreshold = 0.4 # 0.0: exact match, 1.0: any match
 enableBreadcrumb = true
 enableGoToTop = true
 enableWhoami = true
-summaryShape = "classic" # card, classic, compact
+summaryShape = "compact" # card, classic, compact
 archiveGroupByDate = "2006" # "2006-01": group by month, "2006": group by year
 archivePaginate = 13
 paginateWindow = 1
